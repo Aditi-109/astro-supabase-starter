@@ -1,73 +1,117 @@
-# Set up Supabase with Netlify Astro template
+import React from 'react';
+import { Calendar, Trash2, TrendingUp, MapPin, Recycle } from 'lucide-react';
 
-In this guide we’re going to install and configure the Supabase Netlify extension, create Supabase project and fill the database with data.
+const Dashboard: React.FC = () => {
+  const nextPickup = {
+    type: 'General Waste',
+    date: 'Tomorrow',
+    time: '8:00 AM'
+  };
 
-## Set up Supabase database
+  const weeklyStats = {
+    recycled: 12,
+    general: 8,
+    compost: 5,
+    reduction: 15
+  };
 
-1. Create Supabase account at [Supabase.com](https://supabase.com).
-2. After signing up to your Supabase account, click New project from your dashboard. Select your organization, give the project a name, generate a new password for the database, and select the us-east-1 region.
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white">
+        <h2 className="text-2xl font-bold mb-2">Welcome back!</h2>
+        <p className="text-green-100">Let's continue making a positive environmental impact together.</p>
+      </div>
 
-## Create the frameworks table
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Next Pickup</p>
+              <p className="text-2xl font-bold text-gray-900">{nextPickup.date}</p>
+              <p className="text-sm text-gray-500">{nextPickup.type} • {nextPickup.time}</p>
+            </div>
+            <Calendar className="h-8 w-8 text-green-600" />
+          </div>
+        </div>
 
-Once the database is provisioned, we can create the **frameworks** table. From your project dashboard, open the SQL editor.
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">This Week</p>
+              <p className="text-2xl font-bold text-gray-900">{weeklyStats.recycled}kg</p>
+              <p className="text-sm text-green-600">Recycled</p>
+            </div>
+            <Recycle className="h-8 w-8 text-blue-600" />
+          </div>
+        </div>
 
-![Create the frameworks table](/public/images/guides/supabase-netlify-sql-editor.png)
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Impact</p>
+              <p className="text-2xl font-bold text-gray-900">{weeklyStats.reduction}%</p>
+              <p className="text-sm text-green-600">Waste Reduction</p>
+            </div>
+            <TrendingUp className="h-8 w-8 text-green-600" />
+          </div>
+        </div>
 
-Run the following commands in the SQL editor to create the **frameworks** table.
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Locations</p>
+              <p className="text-2xl font-bold text-gray-900">3</p>
+              <p className="text-sm text-gray-500">Nearby Centers</p>
+            </div>
+            <MapPin className="h-8 w-8 text-orange-600" />
+          </div>
+        </div>
+      </div>
 
-```sql
-CREATE TABLE frameworks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  url TEXT NOT NULL,
-  description TEXT NOT NULL,
-  logo TEXT NOT NULL,
-  likes INTEGER NOT NULL DEFAULT 0,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-```
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Collections</h3>
+          <div className="space-y-4">
+            {[
+              { type: 'General Waste', date: 'Tomorrow', color: 'bg-gray-500' },
+              { type: 'Recycling', date: 'Friday', color: 'bg-blue-500' },
+              { type: 'Garden Waste', date: 'Next Monday', color: 'bg-green-500' },
+              { type: 'Bulk Items', date: 'Next Thursday', color: 'bg-orange-500' }
+            ].map((item, index) => (
+              <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                <div className={w-3 h-3 rounded-full ${item.color}}></div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">{item.type}</p>
+                  <p className="text-sm text-gray-500">{item.date}</p>
+                </div>
+                <button className="text-sm text-green-600 hover:text-green-700 font-medium">
+                  Set Reminder
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
 
-## Add data
+        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Tips</h3>
+          <div className="space-y-4">
+            <div className="p-4 bg-green-50 rounded-lg border border-green-100">
+              <p className="text-sm font-medium text-green-800">Reduce Food Waste</p>
+              <p className="text-xs text-green-700 mt-1">Plan your meals and store food properly to reduce waste by up to 30%.</p>
+            </div>
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <p className="text-sm font-medium text-blue-800">Clean Containers</p>
+              <p className="text-xs text-blue-700 mt-1">Rinse containers before recycling to ensure they can be processed.</p>
+            </div>
+            <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
+              <p className="text-sm font-medium text-orange-800">Compost at Home</p>
+              <p className="text-xs text-orange-700 mt-1">Start composting organic waste to create nutrient-rich soil.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-Next, let’s add some starter data to the **frameworks** table. From the Table Editor in Supabase (1), choose the **frameworks** table from the list (2) and then select **Insert > Import** data from CSV (3).
-
-![Create the frameworks table](/public/images/guides/supabase-netlify-import-csv.png)
-
-Paste the following data:
-
-```sql
-name,url,logo,likes,description
-Astro,https://astro.build/,astro.svg,0,"Astro is a fresh but familiar approach to building websites. Astro combines decades of proven performance best practices with the DX improvements of the component-oriented era."
-Eleventy,https://svelte.dev/,eleventy.svg,0,"Eleventy (11ty) is a flexible, minimalist static site generator that builds fast, content-driven websites using multiple templating languages and a zero-client-JavaScript philosophy."
-Gatsby,https://www.gatsbyjs.com/,gatsby.svg,0,"Gatsby.js is a React-based framework for building fast, SEO-friendly websites and applications with powerful data integration and static site generation capabilities."
-Next,https://nextjs.org/,next.svg,0,"Next.js enables you to create high-quality web applications with the power of React components."
-Nuxt,https://nuxt.com/,nuxt.svg,0,"Nuxt is an open source framework that makes web development intuitive and powerful. Create performant and production-grade full-stack web apps and websites with confidence."
-Remix,https://remix.run/,remix.svg,0,"Remix is a React framework designed for server-side rendering (SSR). Is a full-stack web framework, allowing developers to build both backend and frontend within a single app."
-Svelte,https://svelte.dev/,svelte.svg,0,"Svelte is a UI framework that uses a compiler to let you write breathtakingly concise components that do minimal work in the browser, using languages you already know — HTML, CSS and JavaScript."
-```
-
-This will give you a preview of the data that will be inserted into the database. Click **Import data** to add the data to the database.
-
-## Install the Supabase Netlify extension
-
-Now we can install the [Supabase extension](https://app.netlify.com/extensions/supabase). In the Netlify UI, go to your team’s dashboard, navigate to **Extensions** and click on the Supabase extension. Click the install button to install the extension.
-
-### Configure the Supabase extension
-
-After the extension is installed, navigate to the Supabase template site that you deployed, and go to **Site configuration**. In the **General** settings, you will see a new **Supabase** section. Click **Connect** to connect your Netlify site to your Supabase account using OAuth.
-
-![Configure the Supabase extension](/public/images/guides/supabase-netlify-connect-oauth.png)
-
-Once you’ve completed this process, return to the Supabase section of your site configuration, and choose the project you just created in Supabase. And make sure to choose Astro for the framework since the template is built with Astro.
-
-![Supabase Netlify extension configuration](/public/images/guides/supabase-netlify-extension-configuration.png)
-
-## Deploy the site again
-
-Now that the extension is configured, we can deploy the site again. Got to **Deploys** (1) and click the **Deploy site** (2) button to deploy the site. 
-
-![Supabase Netlify extension configuration](/public/images/guides/deploy-button.png)
-
-Once the build is complete, navigate to your production URL and you should see the **frameworks** that we just added to the database.
-
-![Template with data](/public/images/guides/web-frameworks.png)
+export default Dashboard;
